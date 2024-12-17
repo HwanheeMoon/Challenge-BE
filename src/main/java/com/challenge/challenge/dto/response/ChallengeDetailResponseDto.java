@@ -6,7 +6,9 @@ import lombok.Getter;
 
 import java.time.LocalDate;
 
-public record ChallengeDetailResponseDto(String title,
+public record ChallengeDetailResponseDto(
+        Long id,
+        String title,
                                          Integer participants,
                                          LocalDate startDate,
                                          LocalDate endDate) {
@@ -17,6 +19,7 @@ public record ChallengeDetailResponseDto(String title,
 
     public static ChallengeDetailResponseDto toEntity(Challenge challenge) {
         return ChallengeDetailResponseDto.builder()
+                .id(challenge.getId())
                 .title(challenge.getTitle())
                 .participants(challenge.getParticipants())
                 .startDate(challenge.getStartDate())

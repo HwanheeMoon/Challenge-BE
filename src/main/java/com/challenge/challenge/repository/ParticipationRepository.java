@@ -1,6 +1,7 @@
 package com.challenge.challenge.repository;
 
 import com.challenge.challenge.domain.Participation;
+import com.challenge.challenge.domain.User;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -27,6 +28,9 @@ public interface ParticipationRepository extends JpaRepository<Participation, In
     @EntityGraph(attributePaths = {"challenge"})
     @Query("select Participation from Participation where challenge.id = :id")
     List<Participation> findByChallengeId(@Param("id") Long id);
+
+    @Query("select count(*) from Participation p where p.user = :user")
+    Integer findCntByUser(User user);
 
 
 

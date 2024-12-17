@@ -17,8 +17,11 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -62,16 +65,22 @@ public class ChallengeService {
                 )).map(ChallengeDetailResponseDto::toEntity);
     }
 
-    public Page<ChallengeSimpleResponseDto> getAllBestChallenges(int page) {
+    public Map<String, Object> getAllBestChallenges(int page) {
         Pageable pageable = PageRequest.of(
                 page,
                 contentsPerPage,
                 Sort.Direction.DESC,
                 "participants");
 
-        return challengeRepository
-                .findAll(pageable)
-                .map(ChallengeSimpleResponseDto::toEntity);
+        List<ChallengeSimpleResponseDto> challenges = challengeRepository.findAll(pageable)
+                .filter(e -> ( ChronoUnit.DAYS.between(LocalDate.now(), e.getEndDate())) >= 0)
+                .map(ChallengeSimpleResponseDto::toEntity).toList();
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("number", page);
+        result.put("data", challenges);
+
+        return result;
     }
 
     public Page<ChallengeSimpleResponseDto> getAllNewChallenges(int page) {

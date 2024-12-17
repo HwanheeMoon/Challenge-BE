@@ -20,10 +20,6 @@ public class Participation {
     @Column(name = "participation_id", nullable = false)
     private Integer id;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
@@ -38,6 +34,12 @@ public class Participation {
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "joined_at")
     private Instant joinedAt;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
 
     @Builder
     public Participation(Integer id,

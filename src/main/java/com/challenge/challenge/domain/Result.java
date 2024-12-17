@@ -25,6 +25,12 @@ public class Result {
     @JoinColumn(name = "participation_id", nullable = false)
     private Participation participation;
 
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+
     @Column(name = "score", nullable = false)
     private Integer score;
 
