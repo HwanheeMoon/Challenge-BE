@@ -1,0 +1,70 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.4.0'
+    id 'io.spring.dependency-management' version '1.1.6'
+}
+
+group = 'com.challenge'
+version = '0.0.1-SNAPSHOT'
+
+java {
+ version = '17'
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+
+    /**
+     * Spring Boot Config
+     */
+//    implementation 'org.springframework.boot:spring-boot-starter-data-redis-reactive'
+//    implementation 'org.springframework.boot:spring-boot-starter-oauth2-authorization-server'
+//    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+//    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+//    implementation 'org.springframework.boot:spring-boot-starter-security' 봉인
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-web-services'
+
+    /**
+    /**
+     * JPA dependencies
+     */
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+    /**
+     * Validation dependencies
+     */
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    /**
+     * postgreSQL
+     */
+    implementation group: 'org.postgresql', name: 'postgresql', version: '42.6.2'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+    compileOnly 'org.projectlombok:lombok'
+
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    runtimeOnly 'org.postgresql:postgresql'
+    annotationProcessor 'org.projectlombok:lombok'
+
+
+    /**
+     * Test dependencies
+     */
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+//    testImplementation 'org.springframework.security:spring-security-test'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
