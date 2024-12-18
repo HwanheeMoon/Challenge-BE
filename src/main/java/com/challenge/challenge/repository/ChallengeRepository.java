@@ -1,6 +1,7 @@
 package com.challenge.challenge.repository;
 
 import com.challenge.challenge.domain.Challenge;
+import com.challenge.challenge.enums.Category;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -21,7 +22,9 @@ public interface ChallengeRepository extends JpaRepository<Challenge, Long> {
     @Query("UPDATE Challenge SET title = :title WHERE id = :id")
     void modifyTitle(@Param("id") Long id, @Param("title") String title);
 
-    Page<Challenge> findAll(Pageable pageable);
+    @Query(value = "SELECT * FROM challenges as c WHERE c.category = CAST(?1 as varchar) AND CURRENT_DATE < c.end_date", nativeQuery = true)
+    Page<Challenge> findAllByCategory(Pageable pageable, @Param("category") String category);
 
+    Page<Challenge> findAll(Pageable pageable);
 
 }

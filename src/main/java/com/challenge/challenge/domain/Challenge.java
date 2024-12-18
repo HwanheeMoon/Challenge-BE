@@ -31,7 +31,11 @@ public class Challenge {
     private String description;
 
     @Column(name = "category")
+    @Enumerated(EnumType.STRING)
     private Category category;
+
+    @Column(name = "img")
+    private String img;
 
     @Column(name = "start_date", nullable = false)
     private LocalDate startDate;
@@ -57,6 +61,7 @@ public class Challenge {
                      String description,
                      Integer participants,
                      Category category,
+                     String img,
                      LocalDate startDate,
                      LocalDate endDate,
                      LocalDateTime createdAt,
@@ -64,6 +69,7 @@ public class Challenge {
         this.id = id;
         this.title = title;
         this.category = category;
+        this.img = img;
         this.description = description;
         this.participants = participants;
         this.startDate = startDate;

@@ -6,6 +6,7 @@ import com.challenge.challenge.Exception.ErrorCode;
 import com.challenge.challenge.domain.Challenge;
 import com.challenge.challenge.dto.response.ChallengeDetailResponseDto;
 import com.challenge.challenge.dto.response.ChallengeSimpleResponseDto;
+import com.challenge.challenge.enums.Category;
 import com.challenge.challenge.repository.ChallengeRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,14 +15,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
 
 @Service
 @Slf4j
@@ -50,6 +48,7 @@ public class ChallengeService {
         return ChallengeDetailResponseDto.builder()
                 .title(challenge.getTitle())
                 .participants(challenge.getParticipants())
+                .img(challenge.getImg())
                 .startDate(challenge.getStartDate())
                 .endDate(challenge.getEndDate())
                 .build();
@@ -65,22 +64,56 @@ public class ChallengeService {
                 )).map(ChallengeDetailResponseDto::toEntity);
     }
 
-    public Map<String, Object> getAllBestChallenges(int page) {
-        Pageable pageable = PageRequest.of(
-                page,
-                contentsPerPage,
-                Sort.Direction.DESC,
-                "participants");
 
-        List<ChallengeSimpleResponseDto> challenges = challengeRepository.findAll(pageable)
-                .filter(e -> ( ChronoUnit.DAYS.between(LocalDate.now(), e.getEndDate())) >= 0)
-                .map(ChallengeSimpleResponseDto::toEntity).toList();
+    /**
+     * 카테고리 별 리스트
+     * @param pageable 페이징 객체
+     * @param category 카테고리 객체
+     * @return DTO 리스트 반환
+     */
+    @Transactional
+    protected Page<ChallengeSimpleResponseDto> getChallenges(Pageable pageable, String category) {
 
-        Map<String, Object> result = new HashMap<>();
-        result.put("number", page);
-        result.put("data", challenges);
+        if(category.equals("ALL")) {
+            return challengeRepository.findAll(pageable)
+                    .map(ChallengeSimpleResponseDto::toEntity);
+        } else {
+            return challengeRepository.findAllByCategory(pageable, category)
+                    .map(ChallengeSimpleResponseDto::toEntity);
+        }
 
-        return result;
+    }
+
+    @Transactional
+    public Page<ChallengeSimpleResponseDto> getAllChallenges(String tab, String category, int page) {
+
+        switch (tab) {
+            case "best" -> {
+                Pageable pageable = PageRequest.of(
+                        page,
+                        contentsPerPage,
+                        Sort.Direction.DESC,
+                        "participants");
+
+                return getChallenges(pageable, category);
+            }
+            case "new" -> {
+                Pageable pageable = PageRequest.of(
+                        page,
+                        contentsPerPage);
+
+                return getChallenges(pageable, category);
+            }
+            case "recommend" -> {
+                Pageable pageable = PageRequest.of(
+                        page,
+                        contentsPerPage,
+                        Sort.Direction.DESC,
+                        "");
+                return getChallenges(pageable, category);
+            }
+            default -> throw new CommonException(ErrorCode.METHOD_NOT_ALLOWED);
+        }
     }
 
     public Page<ChallengeSimpleResponseDto> getAllNewChallenges(int page) {

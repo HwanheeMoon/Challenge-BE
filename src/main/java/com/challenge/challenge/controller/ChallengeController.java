@@ -4,10 +4,7 @@ import com.challenge.challenge.service.ChallengeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @RequestMapping("/challenge")
@@ -24,24 +21,20 @@ public class ChallengeController {
         );
     }
 
-    @GetMapping("/get-all/best/{page}")
-    public ResponseEntity<?> findAllBestChallenges(@PathVariable int page) {
+    @GetMapping("/get-all")
+    public ResponseEntity<?> findAllBestChallenges(@RequestParam("tab") String tab, @RequestParam("category") String category, @RequestParam("page") int page) {
 
         return ResponseEntity.ok(
-                challengeService.getAllBestChallenges(page)
-        );
-    }
-
-    @GetMapping("/get-all/new/{page}")
-    public ResponseEntity<?> findAllNewChallenges(@PathVariable int page) {
-        return ResponseEntity.ok(
-                challengeService.getAllNewChallenges(page)
+                challengeService.getAllChallenges(tab, category, page)
         );
     }
 
     @GetMapping("/detail/{id}")
-    public ResponseEntity<?> findChallengeById(@PathVariable("id") Long id) {
-        return ResponseEntity.ok(challengeService.getChallenge(id));
+    public ResponseEntity<?> getChallengeDetail(@PathVariable Long id) {
+        return ResponseEntity.ok(
+                challengeService.getChallenge(id)
+        );
     }
+
 
 }

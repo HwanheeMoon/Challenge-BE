@@ -13,7 +13,8 @@ public record ChallengeSimpleResponseDto(
         Integer participants,
         Integer deadline,
         LocalDate startDate,
-        Category category
+        Category category,
+        String img
 ) {
 
     @Builder
@@ -29,6 +30,7 @@ public record ChallengeSimpleResponseDto(
                 .startDate(challenge.getStartDate())
                 .deadline((int)( ChronoUnit.DAYS.between(LocalDate.now(), challenge.getEndDate())))
                 .category(challenge.getCategory())
+                .img(challenge.getImg())
                 .build();
     }
 }
